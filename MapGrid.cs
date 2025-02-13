@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Formats.Asn1;
 using System.Linq;
 using System.Numerics;
 using System.Text;
@@ -41,6 +42,20 @@ namespace C_Learn
                     Console.ForegroundColor = ConsoleColor.White;
                     Console.Write("O");
                     break;
+            }
+        }
+
+        public void DrarPlayer(bool isPlayer)
+        {
+            if (isPlayer)
+            {
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.Write("P");
+            }
+            else
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.Write("E");
             }
         }
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Formats.Asn1;
 using System.Linq;
 using System.Numerics;
 using System.Text;
@@ -22,6 +23,8 @@ namespace C_Learn
         /// </summary>
         int mapWidth, mapHeight;
 
+        int mapZeroX, mapZeroY;
+
         /// <summary>
         /// reset player pos
         /// </summary>
@@ -39,24 +42,32 @@ namespace C_Learn
             Console.Clear();
             mapWidth = w;
             mapHeight = h;
+            mapZeroX = mapWidth / 2 / 2;
+            mapZeroY = mapHeight / 2 / 2;
+            GenMap();
             DrawWall();
             DrawString();
-            GenMap();
             DrawMap();
+            DrawPlayer();
             while (true)
             {
                 CheckKeyInput();
                 if (player.curStep >= mapData.Count)
                 {
+
                     Console.SetCursorPosition(10, mapHeight - 3);
-                    Console.Write("Yes,YOU WIN！");
+                    Console.Write("YES,YOU WIN！");
                     break;
                 }
                 else if (enemy.curStep >= mapData.Count)
                 {
                     Console.SetCursorPosition(10, mapHeight - 3);
-                    Console.Write("On,no,You last！");
+                    Console.Write("On,no,you lost！");
                     break;
+                }
+                else 
+                {
+                    DrawPlayer();
                 }
             }
         }
@@ -68,6 +79,7 @@ namespace C_Learn
             {
                 default:
                     MovePlayer();
+                   
                     break;
             }
         }
@@ -75,23 +87,58 @@ namespace C_Learn
         void MovePlayer() 
         {
             Random random = new Random(DateTime.Now.Millisecond);
-            int moveStep = random.Next(1,6);
+            int moveStep = random.Next(1,7);
+
             if (isPlayerTurn)
             {
+                MapGrid playerGrid = mapData[player.curStep];
+                Console.SetCursorPosition(mapZeroX + (int)playerGrid.DrawPos.X, mapZeroY + (int)playerGrid.DrawPos.Y);
+                mapData[player.curStep].Draw();
                 player.curStep += moveStep;
-                Console.SetCursorPosition(10, mapHeight - 3);
-                Console.Write($"玩家移动了{moveStep}，当前在{player.curStep}");
+                WriteLog($"player moved {moveStep}，now on {player.curStep}");
             }
             else
             {
+                MapGrid enemyGrid = mapData[enemy.curStep];
+                Console.SetCursorPosition(mapZeroX + (int)enemyGrid.DrawPos.X, mapZeroY + (int)enemyGrid.DrawPos.Y);
+                mapData[enemy.curStep].Draw();
                 enemy.curStep += moveStep;
-                Console.SetCursorPosition(10, mapHeight - 3);
-                Console.Write($"敌人移动了{moveStep}，当前在{enemy.curStep}");
+                WriteLog($"enemy moved {moveStep}，now on {enemy.curStep}");
             }
             isPlayerTurn = !isPlayerTurn;
-            DrawMap();
         }
 
+        void WriteLog(string str) 
+        {
+            Console.SetCursorPosition(1, mapHeight - 5);
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < mapWidth; i++)
+            {
+                sb.Append(" ");
+            }
+            Console.Write(sb);
+            Console.SetCursorPosition(10, mapHeight - 5);
+            Console.Write(str);
+        }
+
+        private void DrawPlayer() 
+        {
+            MapGrid playGrid = mapData[player.curStep];
+            MapGrid enemyGrid = mapData[enemy.curStep];
+            if (enemy.curStep == player.curStep)
+            {
+                Console.SetCursorPosition(mapZeroX + (int)playGrid.DrawPos.X, mapZeroY + (int)playGrid.DrawPos.Y);
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.Write("A");
+            }
+            else
+            {
+                Console.SetCursorPosition(mapZeroX + (int)playGrid.DrawPos.X, mapZeroY + (int)playGrid.DrawPos.Y);
+                playGrid.DrarPlayer(true);
+                Console.SetCursorPosition(mapZeroX + (int)enemyGrid.DrawPos.X, mapZeroY + (int)enemyGrid.DrawPos.Y);
+                enemyGrid.DrarPlayer(false);
+            }
+        }
 
         private void DrawWall() 
         {
@@ -119,19 +166,21 @@ namespace C_Learn
 
         private void DrawString()
         {
+            Console.SetCursorPosition(2, mapHeight - 10);
+            Console.Write("O:road");
+            Console.SetCursorPosition(26, mapHeight - 10);
+            Console.Write("8:bomb");
             Console.SetCursorPosition(2, mapHeight - 9);
-            Console.Write("O:普通格子");
-            Console.SetCursorPosition(26, mapHeight - 9);
-            Console.Write("8:炸弹");
+            Console.Write("=:random");
             Console.SetCursorPosition(2, mapHeight - 8);
-            Console.Write("=:隧道，随机倒退、暂停、交换位置");
+            Console.Write("P:player");
+            Console.SetCursorPosition(15, mapHeight - 8);
+            Console.Write("E:enemy");
             Console.SetCursorPosition(2, mapHeight - 7);
-            Console.Write("P:玩家");
-            Console.SetCursorPosition(15, mapHeight - 7);
-            Console.Write("E:敌人");
+            Console.Write("A:enemy and player all are here");
 
-            Console.SetCursorPosition(10, mapHeight - 4);
-            Console.Write("按任意键开始游戏");
+            Console.SetCursorPosition(10, mapHeight - 5);
+            Console.Write("push any key move random step，form 1 to 6");
         }
 
 
@@ -177,30 +226,28 @@ namespace C_Learn
 
         private void DrawMap() 
         {
-            int startPointX = mapHeight / 2 / 2;
-            int startPointY = mapHeight / 2 / 2;
             foreach (var item in mapData)
             {
-                Console.SetCursorPosition(startPointX + (int)item.DrawPos.X, startPointY + (int)item.DrawPos.Y);
-                if (item.stepNum == player.curStep && item.stepNum == enemy.curStep)
-                {
-                    Console.ForegroundColor = ConsoleColor.Yellow;
-                    Console.Write("A");
-                }
-                else if (item.stepNum == player.curStep)
-                {
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    Console.Write("P");
-                }
-                else if (item.stepNum == enemy.curStep) 
-                {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.Write("E");
-                }
-                else 
-                {
+                Console.SetCursorPosition(mapZeroX + (int)item.DrawPos.X, mapZeroY + (int)item.DrawPos.Y);
+                //if (item.stepNum == player.curStep && item.stepNum == enemy.curStep)
+                //{
+                //    Console.ForegroundColor = ConsoleColor.Yellow;
+                //    Console.Write("A");
+                //}
+                //else if (item.stepNum == player.curStep)
+                //{
+                //    Console.ForegroundColor = ConsoleColor.Green;
+                //    Console.Write("P");
+                //}
+                //else if (item.stepNum == enemy.curStep) 
+                //{
+                //    Console.ForegroundColor = ConsoleColor.Red;
+                //    Console.Write("E");
+                //}
+                //else 
+                //{
                     item.Draw();
-                }      
+                //}      
             }
         }
     }
