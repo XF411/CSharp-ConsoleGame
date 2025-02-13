@@ -95,6 +95,7 @@ namespace C_Learn
                 Console.SetCursorPosition(mapZeroX + (int)playerGrid.DrawPos.X, mapZeroY + (int)playerGrid.DrawPos.Y);
                 mapData[player.curStep].Draw();
                 player.curStep += moveStep;
+                Console.ForegroundColor = ConsoleColor.Green;
                 WriteLog($"player moved {moveStep}，now on {player.curStep}");
             }
             else
@@ -103,6 +104,7 @@ namespace C_Learn
                 Console.SetCursorPosition(mapZeroX + (int)enemyGrid.DrawPos.X, mapZeroY + (int)enemyGrid.DrawPos.Y);
                 mapData[enemy.curStep].Draw();
                 enemy.curStep += moveStep;
+                Console.ForegroundColor = ConsoleColor.Red;
                 WriteLog($"enemy moved {moveStep}，now on {enemy.curStep}");
             }
             isPlayerTurn = !isPlayerTurn;
@@ -110,14 +112,14 @@ namespace C_Learn
 
         void WriteLog(string str) 
         {
-            Console.SetCursorPosition(1, mapHeight - 5);
+            Console.SetCursorPosition(1, mapHeight - 4);
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < mapWidth; i++)
             {
                 sb.Append(" ");
             }
             Console.Write(sb);
-            Console.SetCursorPosition(10, mapHeight - 5);
+            Console.SetCursorPosition(10, mapHeight - 4);
             Console.Write(str);
         }
 
@@ -167,15 +169,26 @@ namespace C_Learn
         private void DrawString()
         {
             Console.SetCursorPosition(2, mapHeight - 10);
+            Console.ForegroundColor = ConsoleColor.White;
             Console.Write("O:road");
+
             Console.SetCursorPosition(26, mapHeight - 10);
+            Console.ForegroundColor = ConsoleColor.Blue;
             Console.Write("8:bomb");
+
             Console.SetCursorPosition(2, mapHeight - 9);
+            Console.ForegroundColor = ConsoleColor.DarkRed;
             Console.Write("=:random");
+
+            Console.ForegroundColor = ConsoleColor.Green;
             Console.SetCursorPosition(2, mapHeight - 8);
             Console.Write("P:player");
+
+            Console.ForegroundColor = ConsoleColor.Red;
             Console.SetCursorPosition(15, mapHeight - 8);
             Console.Write("E:enemy");
+
+            Console.ForegroundColor = ConsoleColor.Yellow;
             Console.SetCursorPosition(2, mapHeight - 7);
             Console.Write("A:enemy and player all are here");
 
@@ -229,25 +242,7 @@ namespace C_Learn
             foreach (var item in mapData)
             {
                 Console.SetCursorPosition(mapZeroX + (int)item.DrawPos.X, mapZeroY + (int)item.DrawPos.Y);
-                //if (item.stepNum == player.curStep && item.stepNum == enemy.curStep)
-                //{
-                //    Console.ForegroundColor = ConsoleColor.Yellow;
-                //    Console.Write("A");
-                //}
-                //else if (item.stepNum == player.curStep)
-                //{
-                //    Console.ForegroundColor = ConsoleColor.Green;
-                //    Console.Write("P");
-                //}
-                //else if (item.stepNum == enemy.curStep) 
-                //{
-                //    Console.ForegroundColor = ConsoleColor.Red;
-                //    Console.Write("E");
-                //}
-                //else 
-                //{
-                    item.Draw();
-                //}      
+                item.Draw();
             }
         }
     }

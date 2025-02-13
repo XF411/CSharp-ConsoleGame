@@ -31,7 +31,7 @@ namespace C_Learn
                     Console.Write("8");
                     break;
                 case EGirdType.pause:
-                    Console.ForegroundColor = ConsoleColor.Gray;
+                    Console.ForegroundColor = ConsoleColor.DarkRed;
                     Console.Write("=");
                     break;
                 case EGirdType.End:
