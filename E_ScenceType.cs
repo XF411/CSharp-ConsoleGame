@@ -6,10 +6,11 @@ using System.Threading.Tasks;
 
 namespace C_Learn
 {
-    enum E_ScenceType
+    public enum E_ScenceType
     {
         Menu,
-        Game,
+        RunGameScence,
+        SnakeGameScence,
         EndGame,
     }
 }

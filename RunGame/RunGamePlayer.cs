@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace C_Learn
 {
-    public struct Player
+    public struct RunGamePlayer
     {
         public bool isPlayer;
         public int curStep;

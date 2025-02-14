@@ -17,7 +17,7 @@ namespace C_Learn
         End,
     }
 
-    public struct MapGrid
+    public struct RunGameMapGrid
     {
         public Vector2 DrawPos;
         public EGirdType type;

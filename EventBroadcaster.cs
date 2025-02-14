@@ -9,25 +9,11 @@ namespace C_Learn
 
         private Dictionary<string, List<Action>> eventListeners = new Dictionary<string, List<Action>>();
 
-        // 私有构造函数，防止外部实例化
         private EventBroadcaster() { }
 
-        // 公共静态方法，提供单例实例
         public static EventBroadcaster Instance
         {
             get { return instance; }
-        }
-
-        public void AddEventListener(string EventID, Action action)
-        {
-            if (eventListeners.ContainsKey(EventID))
-            {
-                eventListeners[EventID].Add(action);
-            }
-            else
-            {
-                eventListeners.Add(EventID, new List<Action> { action });
-            }
         }
 
         public void BroadcastEvent(string EventID)
@@ -41,5 +27,32 @@ namespace C_Learn
                 }
             }
         }
+
+        public void AddEventListener(string EventID, Action action)
+        {
+            if (eventListeners.ContainsKey(EventID))
+            {
+                if (!eventListeners[EventID].Contains(action))
+                {
+                    eventListeners[EventID].Add(action);
+                }
+            }
+            else
+            {
+                eventListeners.Add(EventID, new List<Action> { action });
+            }
+        }
+
+        public void RemoveEventListener(string EventID, Action action)
+        {
+            if (eventListeners.ContainsKey(EventID))
+            {
+                if (eventListeners[EventID].Contains(action))
+                {
+                    eventListeners[EventID].Remove(action);
+                }
+            }
+        }
+
     }
 }

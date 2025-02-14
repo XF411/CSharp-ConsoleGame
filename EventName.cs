@@ -8,6 +8,8 @@ namespace C_Learn
 {
     static class EventName
     {
-       public const string StartGame = "StartGame";
+       public const string StartRunGame = "StartRunGame";
+       public const string StartSnakeGame = "StartSnakeGame";
+       public const string ExitGame = "ExitGame";
     }
 }
