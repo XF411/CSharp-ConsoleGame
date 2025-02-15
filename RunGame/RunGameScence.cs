@@ -19,7 +19,6 @@ namespace C_Learn
 
     public class RunGameScence : GameScenceBase
     {
-        private static readonly Random random = new Random();
         List<RunGameMapGrid> mapData;
         private List<RunGameMapGrid> needReDrawGrid;
 
@@ -228,7 +227,7 @@ namespace C_Learn
         private void MovePlayer(RunGamePlayer player) 
         {
             //Gen random number for step
-            int moveStep = random.Next(1, 7);
+            int moveStep = CommonTools.CommonRandom.Next(1, 7);
 
             //Get current player grid for redraw
             
@@ -266,7 +265,7 @@ namespace C_Learn
         void BombBoom() 
         {
             //Gen random number for bomb
-            int boomStep = random.Next(1, 7);
+            int boomStep = CommonTools.CommonRandom.Next(1, 7);
 
             //Get current player
             RunGamePlayer boomPlayer = isPlayerTurn ? player : enemy;
@@ -305,7 +304,7 @@ namespace C_Learn
         void PauseTime()
         {
             //Gen random number for step
-            int moveStep = random.Next(1, 7);
+            int moveStep = CommonTools.CommonRandom.Next(1, 7);
 
             //Get can move player,
             //if is player be pause,enemy can move,

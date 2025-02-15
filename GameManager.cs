@@ -117,12 +117,16 @@ namespace C_Learn
         {
             Console.Clear();
             curGameScenceBase = GameScenceDic[E_ScenceType.SnakeGameScence];
+            if (curGameScenceBase is SankeGameScence)
+            {
+                (curGameScenceBase as SankeGameScence).StartNewGame();
+            }
         }
 
         private void EndGame()
         {
             Console.Clear();
-            curGameScenceBase = GameScenceDic[E_ScenceType.RunGameScence];
+            curGameScenceBase = GameScenceDic[E_ScenceType.Menu];
         }
         #endregion
     }

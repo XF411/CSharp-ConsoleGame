@@ -61,8 +61,7 @@ namespace C_Learn
 
         public void RandomType() 
         {
-            Random r = new Random(DateTime.Now.Microsecond);
-            int num = r.Next(100);
+            int num = CommonTools.CommonRandom.Next(100);
             if (num >= 95)
             {
                 type = EGirdType.Bomb;
