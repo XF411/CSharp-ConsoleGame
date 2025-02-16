@@ -37,6 +37,8 @@ namespace C_Learn
         /// </summary>
         int mapWidth, mapHeight;
         int mapZeroX, mapZeroY;
+        int maxStepCow = 10;
+        int logPosY = 11;
 
         /// <summary>
         /// reset player pos
@@ -55,11 +57,11 @@ namespace C_Learn
             Console.Clear();
             mapWidth = ConsoleControler.Instance.DisplayWidth;
             mapHeight = ConsoleControler.Instance.DisplayHeight;
-            mapZeroX = mapWidth / 4;
-            mapZeroY = mapHeight / 4;
+            mapZeroX = mapWidth / 4 + maxStepCow/2 - 1;
+            mapZeroY = (mapHeight - logPosY) / 4;
             GenMap();
-            DrawWall();
             DrawString();
+            DrawWall();
             DrawMap();
             DrawPlayer();
         }
@@ -100,24 +102,24 @@ namespace C_Learn
         private void DrawWall() 
         {
             
-            for (int i = 0; i < mapWidth; i++)
+            for (int i = 0; i < mapWidth - 1; i++)
             {
                 Console.SetCursorPosition(i, 0);
-                Console.Write("-");
+                Console.Write("▉");
                 Console.SetCursorPosition(i, mapHeight - 1);
-                Console.Write("-");
+                Console.Write("▉");
                 Console.SetCursorPosition(i, mapHeight - 6);
-                Console.Write("-");
-                Console.SetCursorPosition(i, mapHeight - 11);
-                Console.Write("-");
+                Console.Write("▉");
+                Console.SetCursorPosition(i, mapHeight - logPosY);
+                Console.Write("▉");
             }
 
-            for (int i = 0; i < mapHeight; i++)
+            for (int i = 0; i < mapHeight - 1; i++)
             {
                 Console.SetCursorPosition(0, i);
-                Console.Write("|");
+                Console.Write("▉");
                 Console.SetCursorPosition(mapWidth - 2, i);
-                Console.Write("|");
+                Console.Write("▉");
             }
         }
 
@@ -129,14 +131,14 @@ namespace C_Learn
             ConsoleControler.DrawString(2, mapHeight - 8, "P:player", ConsoleColor.Green);
             ConsoleControler.DrawString(15, mapHeight - 8, "E:enemy", ConsoleColor.Red);
             ConsoleControler.DrawString(2, mapHeight - 7, "A:enemy and player all are here", ConsoleColor.Yellow);
-            ConsoleControler.DrawString(10, mapHeight - 5, "push any key move random step，form 1 to 6", ConsoleColor.White);
+            ConsoleControler.DrawString(2, mapHeight - 5, "push any key move random step，\n  form 1 to 6", ConsoleColor.White);
         }
 
 
         private void GenMap() 
         {
             int mapSize = 100;
-            int maxStepCow = 10;
+
             int startY = 0;
             int curCowNum = 0;
             bool isAdd = true;
@@ -402,7 +404,7 @@ namespace C_Learn
             {
                 return;
             }
-            ConsoleKeyInfo keyInfo = Console.ReadKey();
+            ConsoleKeyInfo keyInfo = Console.ReadKey(true);
             OnAnyClikClick();
         }
 

@@ -19,7 +19,7 @@ namespace C_Learn
         /// <returns></returns>
         public int GetCursorPosX(int displayW) 
         {
-            int x = displayW - text.Length / 2;
+            int x = displayW - text.Length;
             return x;
         }
 

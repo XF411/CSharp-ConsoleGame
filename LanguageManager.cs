@@ -75,7 +75,7 @@ namespace C_Learn
         }
 
         #region Chinese const
-        public const string MainTitle_CS = "C# 控制台小游戏";
+        public const string MainTitle_CS = "C#控制台小游戏";
         public const string RunGameTitle_CS = "游玩赛跑";
         public const string SnakeGameTitle_CS = "游玩贪吃蛇";
         public const string ExitGameTitle_CS = "退出游戏";

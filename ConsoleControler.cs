@@ -24,14 +24,14 @@ namespace C_Learn
             displayWidth = width;
             displayHeight = height;
             // Ensure buffer size is valid
-            if (displayWidth < Console.WindowWidth) 
-            { 
-                displayWidth = Console.WindowWidth; 
-            }
-            if (displayHeight < Console.WindowHeight)
-            {
-                displayHeight = Console.WindowHeight;
-            }
+            //if (displayWidth < Console.WindowWidth) 
+            //{ 
+            //    displayWidth = Console.WindowWidth; 
+            //}
+            //if (displayHeight < Console.WindowHeight)
+            //{
+            //    displayHeight = Console.WindowHeight;
+            //}
             // Set window size
             Console.SetWindowSize(displayWidth, displayHeight);
             // Set buffer size first

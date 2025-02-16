@@ -8,53 +8,6 @@ namespace C_Learn
 {
     public class MainMenu: GameScenceBase
     {
-        //bool selectGame = true;
-        //bool outMainMenu = false;
-        //public void SetTitle() 
-        //{
-        //Console.SetCursorPosition(w / 2 - 2, h / 2 - 2);
-        //Console.WriteLine(LanguageManager.Instance.GetString("MainTitle"));
-
-        ////while (true)
-        ////{
-        //    Console.SetCursorPosition(w / 2 - 2, h / 2 + 2);
-        //    if (selectGame)
-        //    {
-        //        Console.ForegroundColor = ConsoleColor.Red;
-        //    }
-        //    else
-        //    {
-        //        Console.ForegroundColor = ConsoleColor.White;
-        //    }
-
-        //    Console.WriteLine(LanguageManager.Instance.GetString("RunGameTitle"));
-        //    Console.SetCursorPosition(w / 2 - 2, h / 2 + 3);
-        //    if (selectGame)
-        //    {
-        //        Console.ForegroundColor = ConsoleColor.White;
-        //    }
-        //    else
-        //    {
-        //        Console.ForegroundColor = ConsoleColor.Red;
-        //    }
-        //    Console.WriteLine("ExitGameTitle");
-        //    CheckKeyInput();
-        //    if (outMainMenu)
-        //    {
-        //        if (selectGame)
-        //        {
-        //            EventBroadcaster.Instance.BroadcastEvent(EventName.StartGame);
-        //        }
-        //        else
-        //        {
-        //            Environment.Exit(0);
-        //        }
-        //        //break;
-        //    }
-        //}
-
-        //}
-
         bool needUpdate = true;
         int CurSelect;
 
@@ -67,9 +20,29 @@ namespace C_Learn
         public void Init() 
         {
             InitItemList();
-            //AddListener();
             needUpdate = true;
         }
+
+        private void DrawWall()
+        {
+
+            for (int i = 0; i < ConsoleControler.Instance.DisplayWidth - 1; i++)
+            {
+                Console.SetCursorPosition(i, 0);
+                Console.Write("▉");
+                Console.SetCursorPosition(i, ConsoleControler.Instance.DisplayHeight - 2);
+                Console.Write("▉");
+            }
+
+            for (int i = 0; i < ConsoleControler.Instance.DisplayHeight - 1; i++)
+            {
+                Console.SetCursorPosition(0, i);
+                Console.Write("▉");
+                Console.SetCursorPosition(ConsoleControler.Instance.DisplayWidth - 2, i);
+                Console.Write("▉");
+            }
+        }
+
 
         private void InitItemList() 
         {
@@ -85,23 +58,16 @@ namespace C_Learn
             CurSelect = 0;
         }
 
-        //private void AddListener()
-        //{
-        //    InputControler.Instance.AddListener(ConsoleKey.UpArrow, OnUpClick);
-        //    InputControler.Instance.AddListener(ConsoleKey.DownArrow, OnDownClick);
-        //    InputControler.Instance.AddListener(ConsoleKey.Enter, OnEnterClick);
-        //}
-
-
         public override void Update()
         {
             CheckKeyInput();
             if (needUpdate)
             {
+                DrawWall();
                 var w = Console.WindowWidth / 2;
                 var h = Console.WindowHeight / 2;
                 string title = LanguageManager.Instance.GetString("MainTitle");
-                ConsoleControler.DrawString(w - title.Length / 2, h - 2, title, ConsoleColor.Blue);
+                ConsoleControler.DrawString(w - title.Length, h - 2, title, ConsoleColor.Blue);
                 for (int i = 0; i < Items.Count; i++)
                 {
                     ConsoleColor color = CurSelect == i ? ConsoleColor.Red : Items[i].textColor;
@@ -141,7 +107,7 @@ namespace C_Learn
             {
                 return;
             }
-            ConsoleKeyInfo keyInfo = Console.ReadKey();
+            ConsoleKeyInfo keyInfo = Console.ReadKey(true);
             switch (keyInfo.Key)
             {
                 case ConsoleKey.UpArrow:
@@ -176,9 +142,6 @@ namespace C_Learn
 
         public override void OnExit()
         {
-            //InputControler.Instance.RemoveListener(ConsoleKey.UpArrow, OnUpClick);
-            //InputControler.Instance.RemoveListener(ConsoleKey.DownArrow, OnDownClick);
-            //InputControler.Instance.RemoveListener(ConsoleKey.Enter, OnEnterClick);
         }
     }
 }
