@@ -14,5 +14,6 @@ namespace C_Learn
         public const string WinRunGame = "WinRunGame";
         public const string LastRunGame = "LastRunGame";
         public const string EndSnakeGame = "EndSnakeGame";
+        public const string ChangeLanguage = "ChangeLanguage";
     }
 }

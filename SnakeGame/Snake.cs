@@ -93,7 +93,20 @@ namespace C_Learn
 
         public void Grow() 
         {
+            //add a body in tail and move tail
 
+            var tail = Bodies.Last();
+
+            var newTail = new SnakeBody();
+            newTail.Type = BodyType.Tail;
+            newTail.UpdatePosition(tail.CurPosX, tail.LastPosY);
+
+            //update old tail to new body
+            tail.Type = BodyType.Body;
+
+            //add tail
+            Bodies.Add(newTail);
+            CurLength = Bodies.Count;
         }
 
         public void Turn(MoveDirection newDir) 
@@ -107,6 +120,31 @@ namespace C_Learn
             {
                 return;
             }
+
+
+            // Check if the new direction will cause the snake to overlap itself
+            var head = Bodies[0];
+            var second = Bodies[1];
+            switch (newDir)
+            {
+                case MoveDirection.Up:
+                    if (head.CurPosX == second.CurPosX && head.CurPosY - 1 == second.CurPosY)
+                        return;
+                    break;
+                case MoveDirection.Down:
+                    if (head.CurPosX == second.CurPosX && head.CurPosY + 1 == second.CurPosY)
+                        return;
+                    break;
+                case MoveDirection.Left:
+                    if (head.CurPosX - 1 == second.CurPosX && head.CurPosY == second.CurPosY)
+                        return;
+                    break;
+                case MoveDirection.Right:
+                    if (head.CurPosX + 1 == second.CurPosX && head.CurPosY == second.CurPosY)
+                        return;
+                    break;
+            }
+
             CurDirection = newDir;
         }
 

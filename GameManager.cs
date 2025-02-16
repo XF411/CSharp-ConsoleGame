@@ -9,17 +9,17 @@ namespace C_Learn
 {
     public class GameManager
     {
-        private static GameManager _instance;
+        private static GameManager instance;
         
         public static GameManager Instance
         {
             get
             {
-                if (_instance == null)
+                if (instance == null)
                 {
-                    _instance = new GameManager();
+                    instance = new GameManager();
                 }
-                return _instance;
+                return instance;
             }
         }
         Dictionary<E_ScenceType, GameScenceBase> GameScenceDic;

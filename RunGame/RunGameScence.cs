@@ -19,6 +19,12 @@ namespace C_Learn
 
     public class RunGameScence : GameScenceBase
     {
+
+        public RunGameScence() 
+        {
+            e_ScenceType = E_ScenceType.RunGameScence;
+        }
+
         List<RunGameMapGrid> mapData;
         private List<RunGameMapGrid> needReDrawGrid;
 
@@ -126,13 +132,13 @@ namespace C_Learn
         private void DrawString()
         {
             //I'm lazy,so just use magic number for layout tips,sorry
-            ConsoleControler.DrawString(2, mapHeight - logPosY + 1,  "O:road", ConsoleColor.White);
-            ConsoleControler.DrawString(26, mapHeight - logPosY + 1, "B:bomb", ConsoleColor.Blue);
-            ConsoleControler.DrawString(2, mapHeight - logPosY + 2, "=:be pause", ConsoleColor.DarkRed);
-            ConsoleControler.DrawString(2, mapHeight - logPosY + 3, "P:player", ConsoleColor.Green);
-            ConsoleControler.DrawString(15, mapHeight - logPosY + 3, "E:enemy", ConsoleColor.Red);
-            ConsoleControler.DrawString(2, mapHeight - logPosY + 4, "A:enemy and player all are here", ConsoleColor.Yellow);
-            ConsoleControler.DrawString(2, mapHeight - logPosY + 6, "push any key move random step，\n  form 1 to 6", ConsoleColor.White);
+            ConsoleControler.DrawString(2, mapHeight - logPosY + 1, LanguageManager.Instance.GetString("Road"), ConsoleColor.White);
+            ConsoleControler.DrawString(26, mapHeight - logPosY + 1, LanguageManager.Instance.GetString("Bomb"), ConsoleColor.Blue);
+            ConsoleControler.DrawString(2, mapHeight - logPosY + 2, LanguageManager.Instance.GetString("Pause"), ConsoleColor.DarkRed);
+            ConsoleControler.DrawString(2, mapHeight - logPosY + 3, LanguageManager.Instance.GetString("Player"), ConsoleColor.Green);
+            ConsoleControler.DrawString(15, mapHeight - logPosY + 3, LanguageManager.Instance.GetString("Enemy"), ConsoleColor.Red);
+            ConsoleControler.DrawString(2, mapHeight - logPosY + 4, LanguageManager.Instance.GetString("EnemyAndPlayer"), ConsoleColor.Yellow);
+            ConsoleControler.DrawString(2, mapHeight - logPosY + 6, LanguageManager.Instance.GetString("MoveRandomStep"), ConsoleColor.White);
         }
 
 
@@ -195,6 +201,7 @@ namespace C_Learn
 
         public void StartNewGame() 
         {
+            isExit = false;
             if (mapData != null)
             {
                 mapData.Clear();
@@ -262,7 +269,7 @@ namespace C_Learn
 
             //wirte log
             Console.ForegroundColor = ConsoleColor.Green;
-            WriteLog($"player moved {moveStep}， \n  now on {player.curStep}");
+            WriteLog(string.Format(LanguageManager.Instance.GetString("PlayerMoved"), moveStep, player.curStep));
         }
 
         void BombBoom() 
@@ -300,8 +307,8 @@ namespace C_Learn
                     break;
             }
             //wirte log
-            string playerName = isPlayerTurn ? "player" : "enemy";
-            WriteLog($"Booooom!{playerName} back {boomStep} step，\n  now on {player.curStep}");
+            string playerName = LanguageManager.Instance.GetString(isPlayerTurn ? "PlayerName" : "EnemyName");
+            WriteLog(string.Format(LanguageManager.Instance.GetString("BombBoom"), playerName, boomStep, boomPlayer.curStep));
         }
 
         void PauseTime()
@@ -343,9 +350,9 @@ namespace C_Learn
                     nextTurnType = TurnType.NormalMove;
                     break;
             }
-            string bePauseName = isPlayerTurn ? "player" : "enemy";
-            string canMoveName = canMovePlayer.isPlayer ? "player" : "enemy";
-            WriteLog($"{bePauseName} is be pause!{canMoveName} move {moveStep} step,\n  now on {canMovePlayer.curStep}");
+            string bePauseName = LanguageManager.Instance.GetString(isPlayerTurn ? "PlayerName" : "EnemyName");
+            string canMoveName = LanguageManager.Instance.GetString(canMovePlayer.isPlayer ? "PlayerName" : "EnemyName");
+            WriteLog(string.Format(LanguageManager.Instance.GetString("PauseMove"), bePauseName, canMoveName, moveStep, canMovePlayer.curStep));
         }
 
         private void OnAnyClikClick()
@@ -378,7 +385,10 @@ namespace C_Learn
 
         public override void Update()
         {
-            CheckKeyInput();
+            if (isExit) 
+            {
+                return;
+            }
             if (isNewGame)
             {
                 DrawAllDisplay();
@@ -389,7 +399,9 @@ namespace C_Learn
                 DrawPlayer();
                 DrawGrid();
                 DrawWall();
+                needUpdate = false;
             }
+            CheckKeyInput();
         }
 
         void DrawGrid() 
@@ -412,9 +424,10 @@ namespace C_Learn
             OnAnyClikClick();
         }
 
+        private bool isExit = false;
         public override void OnExit()
         {
-
+            isExit = true;
         }
     }
 }

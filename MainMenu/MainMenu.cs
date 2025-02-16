@@ -13,11 +13,15 @@ namespace C_Learn
         private E_ScenceType lastGameType;
 
         private MainMenuSelectItem PlayAgainItem;
+        private MainMenuSelectItem RunGameItem;
+        private MainMenuSelectItem SnakeGameItem;
 
         string curTitle;
 
         public MainMenu() 
         {
+            e_ScenceType = E_ScenceType.Menu;
+            EventBroadcaster.Instance.AddEventListener(EventName.ChangeLanguage, OnChangeLanguage);
             Init();
         }
 
@@ -51,62 +55,72 @@ namespace C_Learn
         }
 
 
+        private void OnChangeLanguage() 
+        {
+            Console.Clear();
+            curTitle = LanguageManager.Instance.GetString("MainTitle");
+            foreach (MainMenuSelectItem item in Items) 
+            {
+                item.ChangeLanguage();
+            }
+            needUpdate = true;
+        }
+
         private void InitItemList() 
         {
-            MainMenuSelectItem StartRunGame = new MainMenuSelectItem();
-            StartRunGame.text = LanguageManager.Instance.GetString("RunGameTitle");
-            StartRunGame.selectType = E_ScenceType.RunGameScence;
+            RunGameItem = new MainMenuSelectItem();
+            RunGameItem.textID = "RunGameTitle";
+            RunGameItem.selectType = E_ScenceType.RunGameScence;
 
-            MainMenuSelectItem StartSnakeGame = new MainMenuSelectItem();
-            StartSnakeGame.text = LanguageManager.Instance.GetString("SnakeGameTitle");
-            StartSnakeGame.selectType = E_ScenceType.SnakeGameScence;
+            SnakeGameItem = new MainMenuSelectItem();
+            SnakeGameItem.textID = "SnakeGameTitle";
+            SnakeGameItem.selectType = E_ScenceType.SnakeGameScence;
 
             MainMenuSelectItem ExitGame = new MainMenuSelectItem();
-            ExitGame.text = LanguageManager.Instance.GetString("ExitGameTitle");
+            ExitGame.textID = "ExitGameTitle";
             ExitGame.selectType = E_ScenceType.EndGame;
 
             MainMenuSelectItem LanguageChange = new MainMenuSelectItem();
-            LanguageChange.text = LanguageManager.Instance.GetString("ChangeLanguage");
+            LanguageChange.textID = "ChangeLanguage";
             LanguageChange.selectType = E_ScenceType.ChangeLanguage;
 
             PlayAgainItem = new MainMenuSelectItem();
-            PlayAgainItem.text = LanguageManager.Instance.GetString("PlayAgain");
+            PlayAgainItem.textID = "PlayAgain";
             PlayAgainItem.selectType = E_ScenceType.None;
 
-            Items.Add(StartRunGame);
-            Items.Add(StartSnakeGame);
+            Items.Add(RunGameItem);
+            Items.Add(SnakeGameItem);
             Items.Add(ExitGame);
             Items.Add(LanguageChange);
+            foreach (var item in Items) 
+            {
+                item.ChangeLanguage();
+            }
+            PlayAgainItem.ChangeLanguage();
             CurSelect = 0;
         }
 
         public override void Update()
         {
+            if (isExit) 
+            {
+                return;
+            }
             CheckKeyInput();
             if (needUpdate)
             {
                 DrawWall();
-                var w = Console.WindowWidth / 2;
-                var h = Console.WindowHeight / 2;
-                //string title = LanguageManager.Instance.GetString("MainTitle");
-                //ConsoleControler.DrawString(w - title.Length, h - 2, title, ConsoleColor.Blue);
-                //DrawTitle();
-                ConsoleControler.DrawString(w - curTitle.Length, h - 2, curTitle, ConsoleColor.Blue);
+                var w = Console.WindowWidth;
+                var h = Console.WindowHeight/2;
+                ConsoleControler.DrawString((w - curTitle.Length)/2 - 2, h - 4, curTitle, ConsoleColor.Blue);
                 for (int i = 0; i < Items.Count; i++)
                 {
                     ConsoleColor color = CurSelect == i ? ConsoleColor.Red : Items[i].textColor;
-                    ConsoleControler.DrawString(Items[i].GetCursorPosX(w), h + 1 + i, Items[i].text, color);
+                    ConsoleControler.DrawString(Items[i].GetCursorPosX(w) - 2, h + i, Items[i].text, color);
                 }
             }
             needUpdate = false;
         }
-
-        //private void DrawTitle(int w,int h) 
-        //{
-            //string title = LanguageManager.Instance.GetString("MainTitle");
-
-        //}
-
         private void OnUpClick() 
         {
             if ((CurSelect - 1) < 0)
@@ -165,43 +179,48 @@ namespace C_Learn
                     EventBroadcaster.Instance.BroadcastEvent(EventName.StartSnakeGame);
                     break;
                 case E_ScenceType.ChangeLanguage:
-                    //TODO
+                    LanguageManager.Instance.ChangeLanguage();
+                    break;
+                case E_ScenceType.EndGame:
+                    Environment.Exit(0);
                     break;
                 default:
                     break;
             }
         }
 
+        private bool isExit = false;
+
         public override void OnExit()
         {
+            isExit = true;
         }
 
 
         internal void SetForEndRunGame(bool isWin)
         {
+            isExit = false;
             Console.Clear();
             needUpdate = true;
             CurSelect = 0;
-            int needRemove = -1;
-            for (int i = 0; i < Items.Count; i++) 
+
+            if (Items.Contains(RunGameItem))
             {
-                if (Items[i].selectType == E_ScenceType.RunGameScence) 
-                {
-                    needRemove = i;
-                    break;
-                }
+                Items.Remove(RunGameItem);
             }
-            if (needRemove >= 0) 
+
+            if (!Items.Contains(SnakeGameItem))
             {
-                Items.RemoveAt(needRemove);
+                SnakeGameItem.ChangeLanguage();
+                Items.Insert(1,SnakeGameItem);
             }
 
             if (!Items.Contains(PlayAgainItem)) 
             {
                 Items.Insert(0, PlayAgainItem);
-                PlayAgainItem.selectType = E_ScenceType.RunGameScence;
+               
             }
-
+            PlayAgainItem.selectType = E_ScenceType.RunGameScence;
             if (isWin) 
             {
                 curTitle = LanguageManager.Instance.GetString("WinRunGame");
@@ -214,28 +233,28 @@ namespace C_Learn
 
         internal void SetForEndSnakeGame(int point)
         {
+            isExit = false;
             Console.Clear();
             needUpdate = true;
             CurSelect = 0;
-            int needRemove = -1;
-            for (int i = 0; i < Items.Count; i++)
+
+            if (!Items.Contains(RunGameItem))
             {
-                if (Items[i].selectType == E_ScenceType.SnakeGameScence)
-                {
-                    needRemove = i;
-                    break;
-                }
+                RunGameItem.ChangeLanguage();
+                Items.Insert(1,RunGameItem);
             }
-            if (needRemove >= 0)
+
+            if (Items.Contains(SnakeGameItem))
             {
-                Items.RemoveAt(needRemove);
+                Items.Remove(SnakeGameItem);
             }
 
             if (!Items.Contains(PlayAgainItem))
             {
                 Items.Insert(0, PlayAgainItem);
-                PlayAgainItem.selectType = E_ScenceType.SnakeGameScence;
+                
             }
+            PlayAgainItem.selectType = E_ScenceType.SnakeGameScence;
 
             curTitle = string.Format(LanguageManager.Instance.GetString("EndSnakeGame"),point.ToString());
         }
