@@ -11,7 +11,7 @@ namespace C_Learn
         //public bool isSelect = false;
         public string text;
         public ConsoleColor textColor = ConsoleColor.White;
-
+        public E_ScenceType selectType;
         /// <summary>
         /// Get cursor position X by display width and text length
         /// </summary>

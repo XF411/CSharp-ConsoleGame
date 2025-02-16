@@ -8,9 +8,11 @@ namespace C_Learn
 {
     public enum E_ScenceType
     {
+        None = 0,
         Menu,
         RunGameScence,
         SnakeGameScence,
+        ChangeLanguage,
         EndGame,
     }
 }

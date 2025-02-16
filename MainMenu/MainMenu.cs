@@ -10,6 +10,11 @@ namespace C_Learn
     {
         bool needUpdate = true;
         int CurSelect;
+        private E_ScenceType lastGameType;
+
+        private MainMenuSelectItem PlayAgainItem;
+
+        string curTitle;
 
         public MainMenu() 
         {
@@ -20,12 +25,14 @@ namespace C_Learn
         public void Init() 
         {
             InitItemList();
+            curTitle = LanguageManager.Instance.GetString("MainTitle");
             needUpdate = true;
         }
 
         private void DrawWall()
         {
 
+            Console.ForegroundColor = ConsoleColor.Blue;
             for (int i = 0; i < ConsoleControler.Instance.DisplayWidth - 1; i++)
             {
                 Console.SetCursorPosition(i, 0);
@@ -48,13 +55,28 @@ namespace C_Learn
         {
             MainMenuSelectItem StartRunGame = new MainMenuSelectItem();
             StartRunGame.text = LanguageManager.Instance.GetString("RunGameTitle");
+            StartRunGame.selectType = E_ScenceType.RunGameScence;
+
             MainMenuSelectItem StartSnakeGame = new MainMenuSelectItem();
             StartSnakeGame.text = LanguageManager.Instance.GetString("SnakeGameTitle");
+            StartSnakeGame.selectType = E_ScenceType.SnakeGameScence;
+
             MainMenuSelectItem ExitGame = new MainMenuSelectItem();
             ExitGame.text = LanguageManager.Instance.GetString("ExitGameTitle");
+            ExitGame.selectType = E_ScenceType.EndGame;
+
+            MainMenuSelectItem LanguageChange = new MainMenuSelectItem();
+            LanguageChange.text = LanguageManager.Instance.GetString("ChangeLanguage");
+            LanguageChange.selectType = E_ScenceType.ChangeLanguage;
+
+            PlayAgainItem = new MainMenuSelectItem();
+            PlayAgainItem.text = LanguageManager.Instance.GetString("PlayAgain");
+            PlayAgainItem.selectType = E_ScenceType.None;
+
             Items.Add(StartRunGame);
             Items.Add(StartSnakeGame);
             Items.Add(ExitGame);
+            Items.Add(LanguageChange);
             CurSelect = 0;
         }
 
@@ -66,8 +88,10 @@ namespace C_Learn
                 DrawWall();
                 var w = Console.WindowWidth / 2;
                 var h = Console.WindowHeight / 2;
-                string title = LanguageManager.Instance.GetString("MainTitle");
-                ConsoleControler.DrawString(w - title.Length, h - 2, title, ConsoleColor.Blue);
+                //string title = LanguageManager.Instance.GetString("MainTitle");
+                //ConsoleControler.DrawString(w - title.Length, h - 2, title, ConsoleColor.Blue);
+                //DrawTitle();
+                ConsoleControler.DrawString(w - curTitle.Length, h - 2, curTitle, ConsoleColor.Blue);
                 for (int i = 0; i < Items.Count; i++)
                 {
                     ConsoleColor color = CurSelect == i ? ConsoleColor.Red : Items[i].textColor;
@@ -76,6 +100,13 @@ namespace C_Learn
             }
             needUpdate = false;
         }
+
+        //private void DrawTitle(int w,int h) 
+        //{
+            //string title = LanguageManager.Instance.GetString("MainTitle");
+
+        //}
+
         private void OnUpClick() 
         {
             if ((CurSelect - 1) < 0)
@@ -124,16 +155,17 @@ namespace C_Learn
 
         private void OnEnterClick()
         {
-            switch (CurSelect)
+            E_ScenceType type = Items[CurSelect].selectType;
+            switch (type)
             {
-                case 0:
+                case E_ScenceType.RunGameScence:
                     EventBroadcaster.Instance.BroadcastEvent(EventName.StartRunGame);
                     break;
-                case 1:
+                case E_ScenceType.SnakeGameScence:
                     EventBroadcaster.Instance.BroadcastEvent(EventName.StartSnakeGame);
                     break;
-                case 2:
-                    EventBroadcaster.Instance.BroadcastEvent(EventName.ExitGame);
+                case E_ScenceType.ChangeLanguage:
+                    //TODO
                     break;
                 default:
                     break;
@@ -142,6 +174,70 @@ namespace C_Learn
 
         public override void OnExit()
         {
+        }
+
+
+        internal void SetForEndRunGame(bool isWin)
+        {
+            Console.Clear();
+            needUpdate = true;
+            CurSelect = 0;
+            int needRemove = -1;
+            for (int i = 0; i < Items.Count; i++) 
+            {
+                if (Items[i].selectType == E_ScenceType.RunGameScence) 
+                {
+                    needRemove = i;
+                    break;
+                }
+            }
+            if (needRemove >= 0) 
+            {
+                Items.RemoveAt(needRemove);
+            }
+
+            if (!Items.Contains(PlayAgainItem)) 
+            {
+                Items.Insert(0, PlayAgainItem);
+                PlayAgainItem.selectType = E_ScenceType.RunGameScence;
+            }
+
+            if (isWin) 
+            {
+                curTitle = LanguageManager.Instance.GetString("WinRunGame");
+            }
+            else
+            {
+                curTitle = LanguageManager.Instance.GetString("LastRunGame");
+            }
+        }
+
+        internal void SetForEndSnakeGame(int point)
+        {
+            Console.Clear();
+            needUpdate = true;
+            CurSelect = 0;
+            int needRemove = -1;
+            for (int i = 0; i < Items.Count; i++)
+            {
+                if (Items[i].selectType == E_ScenceType.SnakeGameScence)
+                {
+                    needRemove = i;
+                    break;
+                }
+            }
+            if (needRemove >= 0)
+            {
+                Items.RemoveAt(needRemove);
+            }
+
+            if (!Items.Contains(PlayAgainItem))
+            {
+                Items.Insert(0, PlayAgainItem);
+                PlayAgainItem.selectType = E_ScenceType.SnakeGameScence;
+            }
+
+            curTitle = string.Format(LanguageManager.Instance.GetString("EndSnakeGame"),point.ToString());
         }
     }
 }

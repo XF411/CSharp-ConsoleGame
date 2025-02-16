@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -47,6 +48,19 @@ namespace C_Learn
             EventBroadcaster.Instance.AddEventListener(EventName.StartRunGame, () => { EnterScence(E_ScenceType.RunGameScence); });
             EventBroadcaster.Instance.AddEventListener(EventName.StartSnakeGame, () => { EnterScence(E_ScenceType.SnakeGameScence); });
             EventBroadcaster.Instance.AddEventListener(EventName.ExitGame, () => { EnterScence(E_ScenceType.EndGame); });
+
+            EventBroadcaster.Instance.AddEventListener(EventName.WinRunGame, () => { 
+                EnterScence(E_ScenceType.Menu);
+                SetMenuEndRunGame(true);
+            });
+            EventBroadcaster.Instance.AddEventListener(EventName.LastRunGame, () => { 
+                EnterScence(E_ScenceType.Menu);
+                SetMenuEndRunGame(false);
+            });
+            EventBroadcaster.Instance.AddEventListener(EventName.EndSnakeGame, () => { 
+                EnterScence(E_ScenceType.Menu);
+                SetMenuEndSnakeGame();
+            });
         }
 
         /// <summary>
@@ -97,6 +111,16 @@ namespace C_Learn
             }
         }
 
+        private void SetMenuEndRunGame(bool isWin) 
+        {
+            (GameScenceDic[E_ScenceType.Menu] as MainMenu).SetForEndRunGame(isWin);
+        }
+
+        private void SetMenuEndSnakeGame()
+        {
+            int point = (GameScenceDic[E_ScenceType.SnakeGameScence] as SankeGameScence).GetPoint();
+            (GameScenceDic[E_ScenceType.Menu] as MainMenu).SetForEndSnakeGame(point);
+        }
         private void ToMainMenu()
         {
             Console.Clear();

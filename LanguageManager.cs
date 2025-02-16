@@ -79,8 +79,11 @@ namespace C_Learn
         public const string RunGameTitle_CS = "游玩赛跑";
         public const string SnakeGameTitle_CS = "游玩贪吃蛇";
         public const string ExitGameTitle_CS = "退出游戏";
-        public const string ChineseTitle_CS = "← 中文 →";
+        public const string ChangeLanguage_CS = "切换语言";
         public const string PlayAgain_CS = "再玩一次？";
+        public const string WinRunGame_CS = "你赢下了赛跑游戏!";
+        public const string WinLastGame_CS = "你输掉了赛跑游戏!";
+        public const string EndSnakeGame_CS = "蛇蛇撞晕掉了，你的得分是 {0}";
         #endregion
 
         #region English const
@@ -88,8 +91,11 @@ namespace C_Learn
         public const string RunGameTitle_EN = "Play Run Game";
         public const string SnakeGameTitle_EN = "Play Snake Game";
         public const string ExitGameTitle_EN = "Exit Game";
-        public const string EnglishTitle_EN = "← English →";
-        public const string PlayAgain_EN = "Again？";
+        public const string ChangeLanguage_EN = "Change Language";
+        public const string PlayAgain_EN = "Play Again?";
+        public const string WinRunGame_EN = "You won the run game!";
+        public const string WinLastGame_EN = "You lost the run game!";
+        public const string EndSnakeGame_EN = "The snake crashed, your point is {0}";
         #endregion
     }
 

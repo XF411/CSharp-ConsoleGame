@@ -76,7 +76,7 @@ namespace C_Learn
                 sb.Append(" ");
             }
             Console.Write(sb);
-            Console.SetCursorPosition(10, mapHeight - 4);
+            Console.SetCursorPosition(2, mapHeight - 4);
             Console.Write(str);
         }
 
@@ -101,7 +101,7 @@ namespace C_Learn
 
         private void DrawWall() 
         {
-            
+            Console.ForegroundColor = ConsoleColor.Blue;
             for (int i = 0; i < mapWidth - 1; i++)
             {
                 Console.SetCursorPosition(i, 0);
@@ -125,13 +125,14 @@ namespace C_Learn
 
         private void DrawString()
         {
-            ConsoleControler.DrawString(2, mapHeight - 10, "O:road", ConsoleColor.White);
-            ConsoleControler.DrawString(26, mapHeight - 10, "B:bomb", ConsoleColor.Blue);
-            ConsoleControler.DrawString(2, mapHeight - 9, "=:be pause", ConsoleColor.DarkRed);
-            ConsoleControler.DrawString(2, mapHeight - 8, "P:player", ConsoleColor.Green);
-            ConsoleControler.DrawString(15, mapHeight - 8, "E:enemy", ConsoleColor.Red);
-            ConsoleControler.DrawString(2, mapHeight - 7, "A:enemy and player all are here", ConsoleColor.Yellow);
-            ConsoleControler.DrawString(2, mapHeight - 5, "push any key move random step，\n  form 1 to 6", ConsoleColor.White);
+            //I'm lazy,so just use magic number for layout tips,sorry
+            ConsoleControler.DrawString(2, mapHeight - logPosY + 1,  "O:road", ConsoleColor.White);
+            ConsoleControler.DrawString(26, mapHeight - logPosY + 1, "B:bomb", ConsoleColor.Blue);
+            ConsoleControler.DrawString(2, mapHeight - logPosY + 2, "=:be pause", ConsoleColor.DarkRed);
+            ConsoleControler.DrawString(2, mapHeight - logPosY + 3, "P:player", ConsoleColor.Green);
+            ConsoleControler.DrawString(15, mapHeight - logPosY + 3, "E:enemy", ConsoleColor.Red);
+            ConsoleControler.DrawString(2, mapHeight - logPosY + 4, "A:enemy and player all are here", ConsoleColor.Yellow);
+            ConsoleControler.DrawString(2, mapHeight - logPosY + 6, "push any key move random step，\n  form 1 to 6", ConsoleColor.White);
         }
 
 
@@ -261,7 +262,7 @@ namespace C_Learn
 
             //wirte log
             Console.ForegroundColor = ConsoleColor.Green;
-            WriteLog($"player moved {moveStep}，now on {player.curStep}");
+            WriteLog($"player moved {moveStep}， \n  now on {player.curStep}");
         }
 
         void BombBoom() 
@@ -300,7 +301,7 @@ namespace C_Learn
             }
             //wirte log
             string playerName = isPlayerTurn ? "player" : "enemy";
-            WriteLog($"Booooom!{playerName} back {boomStep} step，now on {player.curStep}");
+            WriteLog($"Booooom!{playerName} back {boomStep} step，\n  now on {player.curStep}");
         }
 
         void PauseTime()
@@ -344,7 +345,7 @@ namespace C_Learn
             }
             string bePauseName = isPlayerTurn ? "player" : "enemy";
             string canMoveName = canMovePlayer.isPlayer ? "player" : "enemy";
-            WriteLog($"{bePauseName} is be pause!{canMoveName} move {moveStep} step,now on {canMovePlayer.curStep}");
+            WriteLog($"{bePauseName} is be pause!{canMoveName} move {moveStep} step,\n  now on {canMovePlayer.curStep}");
         }
 
         private void OnAnyClikClick()
@@ -362,10 +363,12 @@ namespace C_Learn
                     PauseTime();
                     break;
                 case TurnType.Win:
-                    WriteLog("You win!");
+                    //WriteLog("You win!");
+                    EventBroadcaster.Instance.BroadcastEvent(EventName.WinRunGame);
                     break;
                 case TurnType.Last:
-                    WriteLog("You last!");
+                    //WriteLog("You last!");
+                    EventBroadcaster.Instance.BroadcastEvent(EventName.LastRunGame);
                     break;
             }
             needUpdate = true;
@@ -385,6 +388,7 @@ namespace C_Learn
             {
                 DrawPlayer();
                 DrawGrid();
+                DrawWall();
             }
         }
 
