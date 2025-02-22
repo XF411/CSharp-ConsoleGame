@@ -1,1 +1,1 @@
-A mini windows Console game for train my c# skill.
+A mini windows Console game for review my c# skill.
